@@ -469,3 +469,138 @@ Apache zookeeper is used by hadoop components to co-ordinate  their actions acro
    sudo mv zookeeper-3.4.10 /usr/local/zookeeper1
    ```
 4. Configure Zookeeper
+   * Open file **zoo.cfg** with your preferred editor
+   
+     `sudo gedit /usr/local/zookeeper/conf/zoo.cfg` or `sudo nano /usr/local/zookeeper/conf/zoo.cfg`
+   * Set the file as follows
+     ```
+     # The number of milliseconds of each tick
+     tickTime=2000
+     # The number of ticks that the initial
+     # synchronization phase can take
+     initLimit=10
+     # The number of ticks that can pass between
+     # sending a request and getting an acknowledgement
+     syncLimit=5
+     # the directory where the snapshot is stored.
+     # do not use /tmp for storage, /tmp here is just
+     # example sakes.
+     dataDir=/usr/local/zookeeper/data
+     # the port at which the clients will connect
+     clientPort=2181
+     # the maximum number of client connections.
+     # increase this if you need to handle more clients
+     #maxClientCnxns=60
+     #
+     # Be sure to read the maintenance section of the
+     # administrator guide before turning on autopurge.
+     #
+     # http://zookeeper.apache.org/doc/current/zookeeperAdmin.html#sc_maintenance
+     #
+     # The number of snapshots to retain in dataDir
+     #autopurge.snapRetainCount=3
+     # Purge task interval in hours
+     # Set to "0" to disable auto purge feature
+     #autopurge.purgeInterval=1
+     server.1=localhost:2888:3888
+     server.2=localhost:2889:3889
+     ```
+5. Copy file **java.env** located in Zookeeper folder to **/usr/local/zookeeper/conf**
+   ```
+   sudo mv Zookeeper/java.env /usr/local/zookeeper/conf
+   ```
+6. Create data directory. In that directory, we need to create myid file, which will have only one character - 1, which tells this zookeeper server as to which server it is and accordingly which ports to use (from the last two lines in zoo.cfg).
+   ```
+   mkdir /usr/local/zookeeper/data
+   mkdir /usr/local/zookeeper/logs
+   echo "1" > /usr/local/zookeeper/data/myid
+   ```
+7. Configure second server
+   * Open file **zoo.cfg** with your preferred editor
+     
+     `sudo gedit /usr/local/zookeeper1/conf/zoo.cfg` or `sudo nano /usr/local/zookeeper1/conf/zoo.cfg`
+   * Set the file as follows
+     ```
+     # The number of milliseconds of each tick
+     tickTime=2000
+     # The number of ticks that the initial
+     # synchronization phase can take
+     initLimit=10
+     # The number of ticks that can pass between
+     # sending a request and getting an acknowledgement
+     syncLimit=5
+     # the directory where the snapshot is stored.
+     # do not use /tmp for storage, /tmp here is just
+     # example sakes.
+     dataDir=/usr/local/zookeeper1/data
+     # the port at which the clients will connect
+     clientPort=2182
+     # the maximum number of client connections.
+     # increase this if you need to handle more clients
+     #maxClientCnxns=60
+     #
+     # Be sure to read the maintenance section of the
+     # administrator guide before turning on autopurge.
+     #
+     # http://zookeeper.apache.org/doc/current/zookeeperAdmin.html#sc_maintenance
+     #
+     # The number of snapshots to retain in dataDir
+     #autopurge.snapRetainCount=3
+     # Purge task interval in hours
+     # Set to "0" to disable auto purge feature
+     #autopurge.purgeInterval=1
+     server.1=localhost:2888:3888
+     server.2=localhost:2889:3889
+     ```
+8. Copy file **java.env** located in Zookeeper1 folder to **/usr/local/zookeeper1/conf**
+   ```
+   sudo mv Zookeeper1/java.env /usr/local/zookeeper1/conf
+   ```
+9. Create data directory for server 2
+   ```
+   mkdir /usr/local/zookeeper1/data
+   mkdir /usr/local/zookeeper1/logs 
+   echo "2" > /usr/local/zookeeper1/data/myid
+   ```
+10. Change ownership of directories
+    ```
+    sudo chown -R zookeeper:hadoop /usr/local/zookeeper
+    sudo chown -R zookeeper:hadoop /usr/local/zookeeper1
+    ```
+11. Start server for test purposes
+    ```
+    apa@apa-Lenovo-G505:~$ sudo su -p - zookeeper -c "/usr/local/zookeeper/bin/zkServer.sh start"
+    ZooKeeper JMX enabled by default
+    Using config: /usr/local/zookeeper/bin/../conf/zoo.cfg
+    Starting zookeeper ... STARTED
+    apa@apa-Lenovo-G505:~$ sudo su -p - zookeeper -c "/usr/local/zookeeper1/bin/zkServer.sh start"
+    ZooKeeper JMX enabled by default
+    Using config: /usr/local/zookeeper1/bin/../conf/zoo.cfg
+    Starting zookeeper ... STARTED
+    apa@apa-Lenovo-G505:~$ echo srvr | nc localhost 2181
+    Zookeeper version: 3.4.10-39d3a4f269333c922ed3db283be479f9deacaa0f, built on 03/23/2017 10:13 GMT
+    Latency min/avg/max: 0/0/0
+    Received: 1
+    Sent: 0
+    Connections: 1
+    Outstanding: 0
+    Zxid: 0x0
+    Mode: follower
+    
+    Node count: 4
+    apa@apa-Lenovo-G505:~$ echo srvr | nc localhost 2182
+    Zookeeper version: 3.4.10-39d3a4f269333c922ed3db283be479f9deacaa0f, built on 03/23/2017 10:13 GMT
+    Latency min/avg/max: 0/0/0
+    Received: 1
+    Sent: 0
+    Connections: 1
+    Outstanding: 0
+    Zxid: 0x200000000
+    Mode: leader
+    Node count: 4
+    ```
+12. Stop servers
+    ```
+    sudo su -p - zookeeper -c "/usr/local/zookeeper/bin/zkServer.sh stop"
+    sudo su -p - zookeeper -c "/usr/local/zookeeper1/bin/zkServer.sh stop"
+    ```
