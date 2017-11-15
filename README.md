@@ -449,3 +449,23 @@ For execution follow the next steps:
     ```
     
 # Install ZOOKEEPER
+
+Apache zookeeper is used by hadoop components to co-ordinate  their actions across cluster.
+
+1. Create a zookeeper user. We use this user for our installation
+   ```
+   sudo adduser --ingroup hadoop zookeeper
+   ```
+2. Download instance of Zookeeper (Latest Stable version 3.4.10 at the moment)
+   ```
+   cd Downloads/
+   wget http://www-us.apache.org/dist/zookeeper/stable/zookeeper-3.4.10.tar.gz
+   ```
+3. Untar the binaries and make two (2) copies, one for each instance
+   ```
+   tar xvf zookeeper-3.4.10.tar.gz 
+   sudo mv zookeeper-3.4.10 /usr/local/zookeeper
+   tar xvf zookeeper-3.4.10.tar.gz
+   sudo mv zookeeper-3.4.10 /usr/local/zookeeper1
+   ```
+4. Configure Zookeeper
