@@ -355,27 +355,22 @@ For execution follow the next steps with a user with sudo permissions:
       ```
     * Save and close the file **yarn-site.xml**
 12. Format Namenode
-    1. Format namenode and start, stop your hdfs first from hdfs account (first source your environment)
-    
-        ```
-        . .bashrc 
-        sudo su - hduser 
-        $HADOOP_INSTALL/bin/hdfs namenode -format
-        $HADOOP_INSTALL/sbin/start-dfs.sh Note: First time will prompt confirmation, type 'yes'
-        $HADOOP_INSTALL/sbin/stop-dfs.sh 
-        exit
-        ```
-        
+    * Format namenode and start, stop your hdfs first from hdfs account (first source your environment)
+      ```
+      source .bashrc 
+      sudo su - hduser 
+      $HADOOP_INSTALL/bin/hdfs namenode -format
+      $HADOOP_INSTALL/sbin/start-dfs.sh Note: First time will prompt confirmation, type 'yes'
+      $HADOOP_INSTALL/sbin/stop-dfs.sh 
+      exit
+      ```        
 13. Start hdfs and resourcemanager
-    1. Execute the following commands
-    
-        ```
-        sudo su -p - hduser -c $HADOOP_INSTALL/sbin/start-dfs.sh
-        sudo su -p - yarn -c $HADOOP_INSTALL/sbin/start-yarn.sh
-        ```
-        
+    * Execute the following commands
+      ```
+      sudo su -p - hduser -c $HADOOP_INSTALL/sbin/start-dfs.sh
+      sudo su -p - yarn -c $HADOOP_INSTALL/sbin/start-yarn.sh
+      ```        
 14. Create user and history-server directories
-
     ```
     sudo su - hduser 
     hdfs dfs -mkdir -p /user/apa
@@ -391,18 +386,16 @@ For execution follow the next steps with a user with sudo permissions:
     hdfs dfs -chmod 777 /tmp/mr-history/intermediate
     hdfs dfs -chmod 1777 /tmp/hadoop-yarn 
     exit 
-    ```
-    
+    ```    
 15. Start history server
 
-    * `sudo su -p - hduser -c "$HADOOP_INSTALL/sbin/mr-jobhistory-daemon.sh start historyserver"`
+    `sudo su -p - hduser -c "$HADOOP_INSTALL/sbin/mr-jobhistory-daemon.sh start historyserver"`
     
 16. Verify Install
 
-    * `yarn jar $YARN_EXAMPLES/hadoop-mapreduce-examples-2.7.3.jar pi 16 1000`
+    `yarn jar $YARN_EXAMPLES/hadoop-mapreduce-examples-2.7.3.jar pi 16 1000`
     
 17. Create start - stop script
-
     ```
     cat run_hdfs.sh
  
@@ -440,16 +433,13 @@ For execution follow the next steps with a user with sudo permissions:
     ;;
     
     esac
-    ```
-    
+    ```    
 18. Start and Stop hdfs as below.
-
     ```
     chmod u+x run_hdfs.sh
     sudo ./run_hdfs.sh start
     sudo ./run_hdfs.sh stop
-    ```
-    
+    ```    
 # Install ZOOKEEPER
 
 Apache zookeeper is used by hadoop components to co-ordinate  their actions across cluster.
