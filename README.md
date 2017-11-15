@@ -604,3 +604,419 @@ Apache zookeeper is used by hadoop components to co-ordinate  their actions acro
     sudo su -p - zookeeper -c "/usr/local/zookeeper/bin/zkServer.sh stop"
     sudo su -p - zookeeper -c "/usr/local/zookeeper1/bin/zkServer.sh stop"
     ```
+
+# Install Apache HIVE
+
+1. Install prerequisites
+   * Install hadoop
+   * Install Zookeeper
+   * Install mysql  and mysql jdbc driver as below
+     ```
+     sudo apt-get update
+     sudo apt-get install mysql-server
+     sudo service mysql status
+     sudo  mysql_secure_installation
+     sudo apt-get install libmysql-java
+     ```
+2. Add environment variables to file **bashrc** (This must be done for all users **hduser, zookeeper, yarn, user**), in order to do this execute the following commands
+
+   * Execute for **hduser** user
+     ```
+     sudo su - hduser
+     ```
+     Open the **bashrc** file to edit
+     
+     `gedit .bashrc` or `nano .bashrc` or `vi .bashrc`
+     
+     Add the following text at the end of the file
+     ```
+     #PIG VARIABLES
+     export PIG_HOME=/usr/local/pig
+     export PATH=$PATH:$PIG_HOME/bin
+     export PIG_CLASSPATH=$PIG_HOME/conf:$HADOOP_INSTALL/etc/hadoop
+     #PIG VARIABLES END
+     
+     #HIVE_VARIABLES
+     export HIVE_HOME=/usr/local/hive
+     export PATH=$PATH:$HIVE_HOME/bin
+     ```
+     Save, close the file and close the **hduser** session
+     ```
+     exit
+     ```
+   * Execute for **zookeeper** user
+     ```
+     sudo su - zookeeper
+     ```
+     Open the **bashrc** file to edit
+     
+     `gedit .bashrc` or `nano .bashrc` or `vi .bashrc`
+     
+     Add the following text at the end of the file
+     ```
+     #PIG VARIABLES
+     export PIG_HOME=/usr/local/pig
+     export PATH=$PATH:$PIG_HOME/bin
+     export PIG_CLASSPATH=$PIG_HOME/conf:$HADOOP_INSTALL/etc/hadoop
+     #PIG VARIABLES END
+     
+     #HIVE_VARIABLES
+     export HIVE_HOME=/usr/local/hive
+     export PATH=$PATH:$HIVE_HOME/bin
+     ```
+     Save, close the file and close the **zookeeper** session
+     ```
+     exit
+     ```
+   * Execute for the **yarn** user
+     ```
+     sudo su - yarn
+     ```
+     Open the **bashrc** file to edit
+     
+     `gedit .bashrc` or `nano .bashrc` or `vi .bashrc`
+        
+     Add the following text at the end of the file
+     ```
+     #PIG VARIABLES
+     export PIG_HOME=/usr/local/pig
+     export PATH=$PATH:$PIG_HOME/bin
+     export PIG_CLASSPATH=$PIG_HOME/conf:$HADOOP_INSTALL/etc/hadoop
+     #PIG VARIABLES END
+     
+     #HIVE_VARIABLES
+     export HIVE_HOME=/usr/local/hive
+     export PATH=$PATH:$HIVE_HOME/bin
+     ```
+     Save, close the file and close the **yarn** session
+     ```
+     exit
+     ```
+   * Execute for the your user account, in this example is **apa**
+     
+     Open the **bashrc** file to edit
+     
+     `gedit .bashrc` or `nano .bashrc` or `vi .bashrc`
+     
+     Add the following text at the end of the file
+     ```
+     #PIG VARIABLES
+     export PIG_HOME=/usr/local/pig
+     export PATH=$PATH:$PIG_HOME/bin
+     export PIG_CLASSPATH=$PIG_HOME/conf:$HADOOP_INSTALL/etc/hadoop
+     #PIG VARIABLES END
+     
+     #HIVE_VARIABLES
+     export HIVE_HOME=/usr/local/hive
+     export PATH=$PATH:$HIVE_HOME/bin
+     ```
+     Save, close the file
+     
+3. Create **hive** user
+   ```
+   sudo adduser --ingroup hadoop hive
+   ```
+4. Edit **bashrc** file for hive user
+   ```
+   sudo su - hive
+   ```
+   Open the **bashrc** file to edit
+     
+   `gedit .bashrc` or `nano .bashrc` or `vi .bashrc`
+        
+   Add the following text at the end of the file
+   ```
+   #HADOOP VARIABLES START
+   export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+   export HADOOP_INSTALL=/usr/local/hadoop
+   export HADOOP_CONF_DIR=$HADOOP_INSTALL/etc/hadoop
+   export YARN_CONF_DIR=$HADOOP_INSTALL/etc/hadoop
+   export PATH=$PATH:$HADOOP_INSTALL/bin
+   export PATH=$PATH:$HADOOP_INSTALL/sbin
+   export HADOOP_MAPRED_HOME=$HADOOP_INSTALL
+   export HADOOP_COMMON_HOME=$HADOOP_INSTALL
+   export HADOOP_HDFS_HOME=$HADOOP_INSTALL
+   export YARN_HOME=$HADOOP_INSTALL
+   export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_INSTALL/lib/native
+   export HADOOP_OPTS="-Djava.library.path=$HADOOP_INSTALL/lib"
+   export HADOOP_OPTS="$HADOOP_OPTS -Djava.library.path=$HADOOP_INSTALL/lib/native"
+   export JAVA_LIBRARY_PATH=$HADOOP_INSTALL/lib/native
+   export LD_LIBRARY_PATH=$HADOOP_INSTALL/lib/native:$LD_LIBRARY_PATH
+   export YARN_EXAMPLES=$HADOOP_INSTALL/share/hadoop/mapreduce
+   export HADOOP_MAPRED_STOP_TIMEOUT=30
+   export YARN_STOP_TIMEOUT=30
+   #HADOOP VARIABLES END
+   
+   #PIG VARIABLES
+   export PIG_HOME=/usr/local/pig
+   export PATH=$PATH:$PIG_HOME/bin
+   export PIG_CLASSPATH=$PIG_HOME/conf:$HADOOP_INSTALL/etc/hadoop
+   #PIG VARIABLES END
+   
+   #HIVE_VARIABLES
+   export HIVE_HOME=/usr/local/hive
+   export PATH=$PATH:$HIVE_HOME/bin
+   ```
+   Save, close the file and close the **hive** user session
+   ```
+   exit
+   ```
+5. Download and extract hive binary
+   ```
+   cd Downloads/
+   wget http://apache.mirrors.lucidnetworks.net/hive/stable-2/apache-hive-2.3.2-bin.tar.gz
+   tar xvf apache-hive-2.3.2-bin.tar.gz
+   sudo mv apache-hive-2.3.2-bin /usr/local/hive
+   cd /usr/local
+   sudo chown -R hive:hadoop hive
+   ```
+6. Make mysql connector library available to hive
+   ```
+   source .bashrc
+   sudo su - hive
+   cd $HIVE_HOME/lib
+   ln -s /usr/share/java/mysql-connector-java.jar mysq-connector-java.jar
+   exit
+   ```
+7. Create metastore database and user for hive
+   ```
+   mysql -u root -p
+   mysql> create database metastore;
+   mysql> create user 'hive'@localhost identified by 'hive';
+   mysql> grant all on metastore.*  to 'hive'@localhost identified by 'hive'; 
+   mysql> flush privileges;
+   mysql> quit;
+   ```
+8. Set Hive configuration
+   * Configure **hive-env.sh**
+     * Open file **hive-env.sh** located in **$HIVE_HOME/conf/hive-env.sh** using your preferred editor
+     
+       `sudo gedit $HIVE_HOME/conf/hive-env.sh` or `sudo nano $HIVE_HOME/conf/hive-env.sh` or `sudo vi $HIVE_HOME/conf/hive-env.sh`
+     * Add or update HADOOP_HOME in this file as follows
+       ```
+       # Set HADOOP_HOME to point to a specific hadoop install directory
+       HADOOP_HOME=/usr/local/hadoop
+       ```
+     * Save and close the file
+   * Configure **hive-log4j2.properties**
+     * Open file **hive-log4j2.properties** located in **$HIVE_HOME/conf/hive-log4j2.properties** using your preferred editor
+       
+       `sudo gedit $HIVE_HOME/conf/hive-log4j2.properties` or `sudo nano $HIVE_HOME/conf/hive-log4j2.properties` or `sudo vi $HIVE_HOME/conf/hive-log4j2.properties`
+     * Update log location, default is /tmp.
+       ```
+       property.hive.log.dir = /usr/local/hive/logs/${sys:user.name}
+       ```
+     * Save and close the file
+   * Configure **hive-site.xml**
+     * Open file **hive-site.xml** located in **$HIVE_HOME/conf/hive-site.xml** using your preferred editor
+       
+       `sudo gedit $HIVE_HOME/conf/hive-site.xml` or `sudo nano $HIVE_HOME/conf/hive-site.xml` or `sudo vi $HIVE_HOME/conf/hive-site.xml`
+     * Add the following text between the **\<configuration>** tags
+       ```
+       <property>
+            <name>javax.jdo.option.ConnectionURL</name>
+            <value>jdbc:mysql://localhost/metastore</value>
+            <description>the URL of the MySQL database</description>
+       </property>
+       <property>
+            <name>javax.jdo.option.ConnectionDriverName</name>
+            <value>com.mysql.jdbc.Driver</value>
+       </property>
+       <property>
+            <name>javax.jdo.option.ConnectionUserName</name>
+            <value>hive</value>
+       </property>
+       <property>
+            <name>javax.jdo.option.ConnectionPassword</name>
+            <value>Hp1nvent</value>
+       </property>
+       <property>
+            <name>datanucleus.fixedDatastore</name>
+            <value>true</value>
+       </property>
+       <property>
+            <name>hive.metastore.schema.verification</name>
+            <value>true</value>
+       </property>
+       <property>
+            <name>hive.metastore.uris</name>
+            <value>thrift://localhost:9083</value>
+            <description>IP address (or fully-qualified domain name) and port of the metastore host</description>
+       </property>
+       <property>
+            <name>hive.support.concurrency</name>
+            <description>Enable Hive's Table Lock Manager Service</description>
+            <value>true</value>
+       </property>
+       <property>
+            <name>datanucleus.autoStartMechanism</name>
+            <value>SchemaTable</value>
+       </property>
+       <property>
+            <name>hive.security.authorization.createtable.owner.grants</name>
+            <value>ALL</value>
+            <description>
+            The privileges automatically granted to the owner whenever a table gets created.
+            An example like "select,drop" will grant select and drop privilege to the owner
+            of the table. Note that the default gives the creator of a table no access to the
+            table (but see HIVE-8067).
+            </description>
+       </property>
+       <property>
+            <name>hive.warehouse.subdir.inherit.perms</name>
+            <value>false</value>
+            <description>
+            Set this to false if the table directories should be created
+            with the permissions derived from dfs umask instead of
+            inheriting the permission of the warehouse or database directory.
+            </description>
+       </property>
+       <property>
+            <name>hive.security.authorization.enabled</name>
+            <value>true</value>
+            <description>enable or disable the Hive client authorization</description>
+       </property>
+       <property>
+            <name>hive.users.in.admin.role</name>
+            <value>apa,hive</value>
+            <description>
+            Comma separated list of users who are in admin role for bootstrapping.
+            More users can be added in ADMIN role later.
+            </description>
+       </property>
+       <property>
+            <name>hive.zookeeper.quorum</name>
+            <description>Zookeeper quorum used by Hive's Table Lock Manager</description>
+            <value>localhost:2181,localhost:2182</value>
+       </property>
+       <property>
+            <name>hive.server2.thrift.port</name>
+            <value>10001</value>
+            <description>TCP port number to listen on, default 10000</description>
+       </property>
+       </configuration>
+       ```
+     * Save and close the file
+9. Initialize metastore schema
+   ```
+   sudo su - hive 
+   schematool -dbType mysql -initSchema 
+   exit
+   ```
+10. Create hdfs directories for hive
+    ```
+    sudo su - hduser 
+    hdfs dfs -mkdir /user/hive
+    hdfs dfs -chmod 755 /user/hive
+    hdfs dfs -mkdir /user/hive/warehouse
+    hdfs dfs -chmod 1777 /user/hive/warehouse
+    hdfs dfs -chown -R hive:hadoop  /user/hive 
+    exit
+    ```
+11. Run Hiveserver2 and Metastore
+    ```
+    sudo ./run_hdfs.sh start
+    sudo su -p - zookeeper -c "/usr/local/zookeeper/bin/zkServer.sh start"
+    sudo su -p - zookeeper -c "/usr/local/zookeeper1/bin/zkServer.sh start"
+    sudo su - hive 
+    $HIVE_HOME/bin/hive --service metastore & $HIVE_HOME/bin/hive --service hiveserver2
+    ```
+12. Run beeline to verify your installation (Replace user **apa** for your own user)
+    ```
+    apa@apa-Lenovo-G505:~$ $HIVE_HOME/bin/beeline -u jdbc:hive2://localhost:10001 -n apa - p apa
+    SLF4J: Class path contains multiple SLF4J bindings.
+    SLF4J: Found binding in [jar:file:/usr/local/hive/lib/log4j-slf4j-impl-2.4.1.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+    SLF4J: Found binding in [jar:file:/usr/local/hadoop/share/hadoop/common/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+    SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+    SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+    Connecting to jdbc:hive2://localhost:10001
+    Connected to: Apache Hive (version 2.1.1)
+    Driver: Hive JDBC (version 2.1.1)
+    17/07/29 23:44:56 [main]: WARN jdbc.HiveConnection: Request to set autoCommit to false; Hive does not support autoCommit=false.
+    Transaction isolation: TRANSACTION_REPEATABLE_READ
+    Beeline version 2.1.1 by Apache Hive
+    0: jdbc:hive2://localhost:10001> show tables;
+    +-----------+--+
+    | tab_name  |
+    +-----------+--+
+    +-----------+--+
+    No rows selected (0.444 seconds)
+    0: jdbc:hive2://localhost:10001> create table test (foo int, bar string);
+    No rows affected (1.316 seconds)
+    0: jdbc:hive2://localhost:10001> show tables;
+    +-----------+--+
+    | tab_name  |
+    +-----------+--+
+    | test      |
+    +-----------+--+
+    1 row selected (0.216 seconds)
+    0: jdbc:hive2://localhost:10001> !q
+    Closing: 0: jdbc:hive2://localhost:10001
+    apa@apa-Lenovo-G505:~$ 
+    ```
+13. Daemonize hive processes
+    ```
+    apa@apa-Lenovo-G505:~$ cat run_hive.sh 
+    #HADOOP VARIABLES START
+    export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+    export HADOOP_INSTALL=/usr/local/hadoop
+    export HADOOP_CONF_DIR=$HADOOP_INSTALL/etc/hadoop
+    export YARN_CONF_DIR=$HADOOP_INSTALL/etc/hadoop
+    export PATH=$PATH:$HADOOP_INSTALL/bin
+    export PATH=$PATH:$HADOOP_INSTALL/sbin
+    export HADOOP_MAPRED_HOME=$HADOOP_INSTALL
+    export HADOOP_COMMON_HOME=$HADOOP_INSTALL
+    export HADOOP_HDFS_HOME=$HADOOP_INSTALL
+    export YARN_HOME=$HADOOP_INSTALL
+    export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_INSTALL/lib/native
+    export HADOOP_OPTS="-Djava.library.path=$HADOOP_INSTALL/lib"
+    export HADOOP_OPTS="$HADOOP_OPTS -Djava.library.path=$HADOOP_INSTALL/lib/native"
+    export JAVA_LIBRARY_PATH=$HADOOP_INSTALL/lib/native
+    export LD_LIBRARY_PATH=$HADOOP_INSTALL/lib/native:$LD_LIBRARY_PATH
+    export YARN_EXAMPLES=$HADOOP_INSTALL/share/hadoop/mapreduce
+    export HADOOP_MAPRED_STOP_TIMEOUT=30
+    export YARN_STOP_TIMEOUT=30
+    #HADOOP VARIABLES END
+    
+    #PIG VARIABLES
+    export PIG_HOME=/usr/local/pig
+    export PATH=$PATH:$PIG_HOME/bin
+    export PIG_CLASSPATH=$PIG_HOME/conf:$HADOOP_INSTALL/etc/hadoop
+    #PIG VARIABLES END
+   
+    #HIVE_VARIABLES
+    export HIVE_HOME=/usr/local/hive
+    export PATH=$PATH:$HIVE_HOME/bin
+
+    case $1 in
+    start)
+    echo "Starting metastore..."
+    su - hive -c "nohup /usr/local/hive/bin/hive --service metastore > /usr/local/hive/logs/hivemetastore.log 2>&1 &"
+    sleep 20
+    su - hive -c "ps -U hive -f | grep metastore | awk '\$8 ~ /oracle/ {print \$2}' > /usr/local/hive/metastore.pid"
+    echo "Starting hiveserver2..."
+    su - hive -c "nohup /usr/local/hive/bin/hiveserver2 > /usr/local/hive/logs/hiveserver2.log 2>&1 &"
+    sleep 10
+    su - hive -c "ps -U hive -f | grep HiveServer | awk '\$8 ~ /oracle/ {print \$2}' > /usr/local/hive/hiveserver2.pid"
+    ;;
+
+    stop)
+    echo "Stopping hiveserver2..."
+    su - hive -c "kill `cat /usr/local/hive/hiveserver2.pid`"
+    sleep 10
+    echo "Stopping metastore..."
+    su - hive -c "kill `cat /usr/local/hive/metastore.pid`"
+    sleep 10
+    ;;
+
+    esac
+    ```
+14. Make the script executable and test it
+    ```
+    chmod u+x run_hive.sh
+    sudo ./run_hive.sh start
+    sudo ./run_hive.sh stop 
+    ```
+   
+   
+   
