@@ -1009,6 +1009,49 @@ Apache zookeeper is used by hadoop components to co-ordinate  their actions acro
     sudo ./run_hive.sh start
     sudo ./run_hive.sh stop 
     ```
-   
-   
-   
+# Book Language Detection using Google N-Gram (British English - American English)
+
+1. [Download](https://github.com/apupiales/software_trend/archive/master.zip) or [Clone](https://github.com/apupiales/software_trend.git) this repository.
+2. Make sure your 2TB HDD is the media disk
+3. Give your user permissions to modify your media disk
+   ```
+   sudo chown -R apa:hadoop /media/
+   ```
+4. Create path **/hive/Data/** in your **media** unit, the final path should be: **/media/hive/Data/**
+   ```
+   cd /media/
+   mkdir hive
+   mkdir hive/Data
+   cd
+   ```
+5. Create folder **tools** in your **home** directory
+   ```
+   mkdir tools
+   ```
+6. Move or Copy **[Tools](https://github.com/apupiales/software_trend/tree/master/Tools)** content into your local **tools** folder
+   * Move example with **apa** user, change **apa** for your local user
+     ```
+     mv /home/apa/software_trend//Tools/ /home/apa/tools
+     ```
+   * Copy example with **apa** user, change **apa** for your local user
+     ```
+     cp -r /home/apa/software_trend//Tools/ /home/apa/tools
+     ```
+7. Download the Google N-Gram repository executing the file **5Ngram-EN-US-GB-download.sh** located inside **tools** folder, in order to do that execute the following command in a terminal session:
+   ```
+   sudo ./tools/5Ngram-EN-US-GB-download.sh
+   ```
+   After a while (Depending of your internet connection download speed) you will have a set of **folders** and **tar.gz files** in your **/media/hive/Data/** path
+   ```
+   /media/hive/Data/5N-EN-US-Part1/googlebooks-eng-us-all-5gram-20120701-0.gz
+   /media/hive/Data/5N-EN-US-Part1/googlebooks-eng-us-all-5gram-20120701-1.gz
+   /media/hive/Data/5N-EN-US-Part1/googlebooks-eng-us-all-5gram-20120701-2.gz
+   /media/hive/Data/5N-EN-US-Part1/googlebooks-eng-us-all-5gram-20120701-3.gz
+   ...
+   ...
+   /media/hive/Data/5N-EN-GB-Part4/googlebooks-eng-gb-all-5gram-20120701-_VERB_.gz
+   ```
+8. Mapreduce the Google N-Gram repository using Hive. In order to do this execute the following **sh** script
+   ```
+   sudo ./tools/run_all.sh start
+   ```
