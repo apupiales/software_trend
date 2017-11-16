@@ -1055,3 +1055,12 @@ Apache zookeeper is used by hadoop components to co-ordinate  their actions acro
    ```
    sudo ./tools/run_all.sh start
    ```
+9. Divide the book to compare (Must be in **txt file**) into 5-grams, to do that execute the following command:
+   ```
+   hadoop jar Ngram/Ngram/out/artifacts/Ngram_jar/Ngram.jar file:///home/wisk/Ngram/Dracula.txt file:///home/wisk/Ngram/Output/DemoOutOne 5
+   ```
+10. Using Hive compare the American English 5 Grams with the book 5-Grams, and the British English 5-Grams with the book 5-Grams, once the comparative is made the system calculates the **Jaccard Coefficient** and the **Jaccard Distance** for each one in order to find out the more likely language.
+    Execute the following command:
+    ```
+    sudo ./tools/run_all_2.sh start
+    ```
