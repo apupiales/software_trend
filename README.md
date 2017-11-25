@@ -119,7 +119,7 @@ For execution follow the next steps with a user with sudo permissions:
      ```
    * Download the distribution (2.8.2 at the moment)
      ```
-     wget http://www.apache.org/dyn/closer.cgi/hadoop/common/hadoop-2.8.2/hadoop-2.8.2.tar.gz
+     wget http://www-us.apache.org/dist/hadoop/common/hadoop-2.8.2/hadoop-2.8.2.tar.gz
      ```
    * Untar the downloaded file using the following command
      ``` 
