@@ -561,15 +561,15 @@ Apache zookeeper is used by hadoop components to co-ordinate  their actions acro
     ```
 11. Start server for test purposes
     ```
-    apa@apa-Lenovo-G505:~$ sudo su -p - zookeeper -c "/usr/local/zookeeper/bin/zkServer.sh start"
+    apa@apa-Lenovo-ideapad-700-15ISK:~$ sudo su -p - zookeeper -c "/usr/local/zookeeper/bin/zkServer.sh start"
     ZooKeeper JMX enabled by default
     Using config: /usr/local/zookeeper/bin/../conf/zoo.cfg
     Starting zookeeper ... STARTED
-    apa@apa-Lenovo-G505:~$ sudo su -p - zookeeper -c "/usr/local/zookeeper1/bin/zkServer.sh start"
+    apa@apa-Lenovo-ideapad-700-15ISK:~$ sudo su -p - zookeeper -c "/usr/local/zookeeper1/bin/zkServer.sh start"
     ZooKeeper JMX enabled by default
     Using config: /usr/local/zookeeper1/bin/../conf/zoo.cfg
     Starting zookeeper ... STARTED
-    apa@apa-Lenovo-G505:~$ echo srvr | nc localhost 2181
+    apa@apa-Lenovo-ideapad-700-15ISK:~$ echo srvr | nc localhost 2181
     Zookeeper version: 3.4.10-39d3a4f269333c922ed3db283be479f9deacaa0f, built on 03/23/2017 10:13 GMT
     Latency min/avg/max: 0/0/0
     Received: 1
@@ -580,7 +580,7 @@ Apache zookeeper is used by hadoop components to co-ordinate  their actions acro
     Mode: follower
     
     Node count: 4
-    apa@apa-Lenovo-G505:~$ echo srvr | nc localhost 2182
+    apa@apa-Lenovo-ideapad-700-15ISK:~$ echo srvr | nc localhost 2182
     Zookeeper version: 3.4.10-39d3a4f269333c922ed3db283be479f9deacaa0f, built on 03/23/2017 10:13 GMT
     Latency min/avg/max: 0/0/0
     Received: 1
@@ -915,7 +915,7 @@ Apache zookeeper is used by hadoop components to co-ordinate  their actions acro
     ```
 12. Run beeline to verify your installation (Replace user **apa** for your own user)
     ```
-    apa@apa-Lenovo-G505:~$ $HIVE_HOME/bin/beeline -u jdbc:hive2://localhost:10001 -n apa - p apa
+    apa@apa-Lenovo-ideapad-700-15ISK:~$ $HIVE_HOME/bin/beeline -u jdbc:hive2://localhost:10001 -n apa - p apa
     SLF4J: Class path contains multiple SLF4J bindings.
     SLF4J: Found binding in [jar:file:/usr/local/hive/lib/log4j-slf4j-impl-2.4.1.jar!/org/slf4j/impl/StaticLoggerBinder.class]
     SLF4J: Found binding in [jar:file:/usr/local/hadoop/share/hadoop/common/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]
@@ -944,11 +944,11 @@ Apache zookeeper is used by hadoop components to co-ordinate  their actions acro
     1 row selected (0.216 seconds)
     0: jdbc:hive2://localhost:10001> !q
     Closing: 0: jdbc:hive2://localhost:10001
-    apa@apa-Lenovo-G505:~$ 
+    apa@apa-Lenovo-ideapad-700-15ISK:~$ 
     ```
 13. Daemonize hive processes
     ```
-    apa@apa-Lenovo-G505:~$ cat run_hive.sh 
+    apa@apa-Lenovo-ideapad-700-15ISK:~$ cat run_hive.sh 
     #HADOOP VARIABLES START
     export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
     export HADOOP_INSTALL=/usr/local/hadoop
