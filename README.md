@@ -83,7 +83,7 @@ For execution follow the next steps with a user with sudo permissions:
    sudo addgroup hadoop
    sudo adduser --ingroup hadoop hduser
    sudo adduser --ingroup hadoop yarn
-   sudo usermod -a -G hadoop kamal
+   sudo usermod -a -G hadoop apa
    ```         
 7. Setup SSH
 
